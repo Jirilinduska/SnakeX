@@ -1,0 +1,7 @@
+:root {
+  --font-pixelify-sans: sans-serif; /* fallback */
+}
+
+.font-pixely {
+  font-family: var(--font-pixelify-sans);
+}
