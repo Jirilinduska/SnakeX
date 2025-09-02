@@ -1,7 +1,12 @@
 :root {
-  --font-pixelify-sans: sans-serif; /* fallback */
+  --font-pixelify-sans: sans-serif;
+  --font-vt323: monospace;
 }
 
 .font-pixely {
   font-family: var(--font-pixelify-sans);
+}
+
+.font-numbers {
+  font-family: var(--font-vt323);
 }

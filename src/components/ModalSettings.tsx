@@ -1,9 +1,10 @@
 'use client'
 
 import { useGameContext } from '@/context/GameContext'
+import { useSounds } from '@/hooks/useSounds'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
-import { useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 type Props = {
     open: boolean
@@ -13,22 +14,30 @@ type Props = {
 
 export const ModalSettings = ({ handleClose, open } : Props) => {
 
-    const { music, sounds, toggleMusic, toggleSounds } = useGameContext()
+    const { music, sounds, toggleMusic, toggleSounds, incMusicVolume, decMusicVolume, musicVolume } = useGameContext()
+    const { playButton } = useSounds()
 
-    const btnClickSound = useRef<HTMLAudioElement | null>(null)
+    const [username, setUsername] = useState({
+      name: "",
+      isChanged: false,
+      isSaved: false,
+    })
 
-    const handlePlayBtnClickSound = () => {
-        if (btnClickSound.current) {
-          btnClickSound.current.currentTime = 0
-          btnClickSound.current.volume = 0.1
-          btnClickSound.current.play()
-        }
+    const handleSaveUsername = () => {
+      localStorage.setItem("username", username.name)
+      setUsername(prev => ({ ...prev, isSaved: true }))
+    }
+    
+
+    useEffect(() => {
+      const usernameLS = localStorage.getItem("username")
+      if(usernameLS && !username.isChanged) {
+        setUsername(prev => ({ ...prev, name: usernameLS }))
       }
+    }, [])
 
   return (
     <div>
-
-      <audio ref={btnClickSound} src="/sounds/btn_click_sound.mp3" />
 
       <Dialog open={open} onClose={handleClose} className="relative z-10">
 
@@ -60,7 +69,7 @@ export const ModalSettings = ({ handleClose, open } : Props) => {
                       <p className="text-sm w-14">Music</p>
                       <button 
                         onClick={() => {
-                            handlePlayBtnClickSound()
+                            playButton()
                             toggleMusic()
                         }} 
                         className="border border-black cursor-pointer w-14"
@@ -73,7 +82,7 @@ export const ModalSettings = ({ handleClose, open } : Props) => {
                       <p className="text-sm w-14">Sounds</p>
                       <button 
                         onClick={() => {
-                            handlePlayBtnClickSound()
+                            playButton()
                             toggleSounds()
                         }} 
                         className="border border-black cursor-pointer w-14"
@@ -83,15 +92,62 @@ export const ModalSettings = ({ handleClose, open } : Props) => {
                     </div>
 
                     <div className="mb-2 flex gap-4 items-center text-black">
-                      <p className="text-sm w-14">Volume</p>
-                      <button className="border border-black cursor-pointer w-14">OFF</button>
+                      <p className="text-sm w-14">Music volume</p>
+                      <div className="flex items-center gap-1">
+                        <button 
+                          className="cursor-pointer" 
+                          onClick={() => {
+                            playButton()
+                            decMusicVolume()
+                          }}
+                        >
+                          -
+                        </button>
+                        <div className="flex">
+                          <div className={`${musicVolume >= 0.1 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.2 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.3 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.4 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.5 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.6 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.7 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.8 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume >= 0.9 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                          <div className={`${musicVolume === 1 ? "bg-black" : "bg-gray-500"} w-[10px] h-[10px]`}></div>
+                        </div>
+                        <button 
+                          className="cursor-pointer" 
+                          onClick={() => {
+                            playButton()
+                            incMusicVolume()
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
 
                     <div className="mb-2 flex gap-4 items-center text-black">
                       <p className="text-sm w-14">Username</p>
-                      <button className="border border-black cursor-pointer w-14">Kokotus</button>
+                      <input
+                        className='border border-gray-700'
+                        value={username.name}
+                        onChange={(e) => setUsername(prev => ({...prev, name: e.target.value, isChanged: true, isSaved: false}))}
+                      />
+                      {username.isChanged && !username.isSaved && 
+                        <button 
+                          onClick={() => {
+                            playButton()
+                            handleSaveUsername()
+                          }} 
+                          className='bg-green-600 p-1 rounded-md hover:bg-green-500 text-white cursor-pointer'
+                        >
+                          Save
+                        </button>
+                      }
                     </div>
 
+                    {username.isSaved && <p className='text-green-500'>Username changed</p>}
 
                   </div>
                 </div>

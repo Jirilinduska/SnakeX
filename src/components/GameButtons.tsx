@@ -1,5 +1,5 @@
+import { useSounds } from "@/hooks/useSounds"
 import { handleDifficultyColor } from "@/styles/styles";
-import { useRef } from "react";
 
 type Props = {
   toggleShowGame: () => void;
@@ -16,19 +16,10 @@ type Props = {
 
 export const GameButtons = ({ handleGameReset, toggleShowGame, setDirection, isStarted, handleSetGameDifficulty, handleStartGame, gameDifficulty, errMessage, } : Props) => {
 
-  const btnClickSound = useRef<HTMLAudioElement | null>(null)
-
-  const handlePlayBtnClickSound = () => {
-    if (btnClickSound.current) {
-      btnClickSound.current.currentTime = 0
-      btnClickSound.current.volume = 0.2
-      btnClickSound.current.play()
-    }
-  }
+  const { playButton } = useSounds()
 
   return (
     <div className="">
-      <audio ref={btnClickSound} src="/sounds/btn_click_sound.mp3" />
 
       {isStarted ? (
         <>
@@ -36,7 +27,7 @@ export const GameButtons = ({ handleGameReset, toggleShowGame, setDirection, isS
             <button
               className="text-xl border border-white p-2 w-20 cursor-pointer"
               onClick={() => {
-                handlePlayBtnClickSound()
+                playButton()
                 toggleShowGame()
               }}
             >
@@ -46,7 +37,7 @@ export const GameButtons = ({ handleGameReset, toggleShowGame, setDirection, isS
             <button
               className="text-xl border border-white p-2 w-20 cursor-pointer"
               onClick={() => {
-                handlePlayBtnClickSound()
+                playButton()
                 handleGameReset()
               }}
             >
@@ -97,7 +88,7 @@ export const GameButtons = ({ handleGameReset, toggleShowGame, setDirection, isS
               gameDifficulty
             )} text-xl border p-2 w-40 cursor-pointer mb-6`}
             onClick={() => {
-              handlePlayBtnClickSound()
+              playButton()
               handleSetGameDifficulty()
             }}
           >
@@ -107,7 +98,7 @@ export const GameButtons = ({ handleGameReset, toggleShowGame, setDirection, isS
           <button
             className="text-xl border border-white p-2 w-40 cursor-pointer mb-4"
             onClick={() => {
-              handlePlayBtnClickSound()
+              playButton()
               handleStartGame()
             }}
           >

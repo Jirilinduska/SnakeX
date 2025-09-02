@@ -1,4 +1,4 @@
-import { DIFFICULTY_EASY, DIFFICULTY_EXTREME, DIFFICULTY_HARD, DIFFICULTY_MEDIUM } from "@/components/GameGrid"
+import { DIFFICULTY_EASY, DIFFICULTY_EXTREME, DIFFICULTY_HARD, DIFFICULTY_MEDIUM } from "@/hooks/useSnake"
 
 
 export const handleDifficultyColor = (difficulty: string) => {

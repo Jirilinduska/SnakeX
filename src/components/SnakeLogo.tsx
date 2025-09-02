@@ -1,44 +1,28 @@
 "use client"
 
-import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { ModalSettings } from "./ModalSettings"
+import { ModalLeaderboard } from "./ModalLeaderboard"
+import { useSounds } from "@/hooks/useSounds"
+import { ModalHowToPlay } from "./ModalHowToPlay"
+import { SnakeHead } from "./SnakeHead"
 
 type Props = {
     toggleShowGame: () => void
 }
 
-const SnakePart = () => {
-    return <div className="w-[10px] h-[10px] bg-green-500 border border-gray-900"></div>
-}
-
-const SnakeHead = () => {
-    return (
-        <div className="w-[10px] h-[10px] bg-green-500 border border-gray-900">
-            <div className="w-[2px] h-[2px] bg-black"></div>
-            <div className="w-[2px] h-[2px] bg-black"></div>
-            <div className="w-[2px] h-[10px] bg-red-500"></div>
-        </div>
-    )
-}
-
 export const SnakeLogo = ({ toggleShowGame } : Props) => {
 
-    const btnHoverSound = useRef<HTMLAudioElement | null>(null)
+    const { playButtonHover, playButton } = useSounds()
 
-    // const [snake, setSnake] = useState<number[]>(Array.from({ length: 32 }, (_, i) => i))
     const [snake, setSnake] = useState<number[]>(Array.from({ length: 5 }, (_, i) => i))
     const [food, setFood] = useState<number[]>([10,13,15])
-    const [settingsModal, setSettingsModal] = useState(false)
-    const audioRef = useRef<HTMLAudioElement | null>(null)
 
-    const handlePlayBtnHoverSound = () => {
-        if(btnHoverSound.current) {
-            btnHoverSound.current.currentTime = 0
-            btnHoverSound.current.volume = 0.3
-            btnHoverSound.current.play()
-        }
-    }
+    const [modals, setModals] = useState({
+        settings: false,
+        howToPlay: false,
+        leaderboard: false
+    })
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -68,17 +52,69 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
 
   return (
     <div>
+        <ModalLeaderboard 
+            open={modals.leaderboard}
+            handleClose={() => {
+                playButton()
+                setModals((prev => ({ ...prev, leaderboard: false })))
+            }}  
+        />
 
-        <ModalSettings handleClose={() => setSettingsModal(false)} open={settingsModal}/>
+        <ModalSettings 
+            handleClose={() => {
+                playButton()
+                setModals((prev => ({ ...prev, settings: false })))
+            }} 
+            open={modals.settings}
+        />
 
-        <audio ref={btnHoverSound} src="/sounds/btn_hover_sound.wav" />
+        <ModalHowToPlay 
+            handleClose={() => {
+                playButton()
+                setModals((prev => ({ ...prev, howToPlay: false })))
+            }} 
+            open={modals.howToPlay}
+        />
+
+
 
         <div className="flex">
 
             <div className="flex flex-col-reverse">
                 {Array.from({ length: 34 }).map((_, i) => {
                     const idx = 178 + i; // otočení pořadí indexů
-                    return <div key={idx} className={`${snake.includes(idx) ? "bg-green-500 border border-gray-900" : food.includes(i) ? "bg-red-500 border-gray-900" : ""} w-[10px] h-[10px]`}  />
+                    
+                    let bg = ""
+
+                    if (snake.includes(idx)) {
+                        bg = "bg-green-500";
+                    }
+
+                    if (snake[snake.length - 1] === idx) {
+                        return <SnakeHead direction={"down"} size="small" />;
+                    }
+
+                    return <div
+                        key={idx}
+                        className={`${bg} border border-gray-900 w-[10px] h-[10px]`}
+                        style={{
+                            backgroundImage: food.includes(i)
+                            ? "url('/images/apple.png')"
+                            : "",
+                        backgroundSize: "cover",
+                        }}
+                    ></div>
+
+                    // if(food.includes(i)) {
+                    //     return (
+
+                    //     )
+                    // }
+
+                    // if(snake.includes(idx)) {
+                    //     return <div key={idx} className="w-[10px] h-[10px] bg-green-500 border border-gray-900"></div>
+                    // }
+                    // return <div key={idx} className={`${snake.includes(idx) ? "bg-green-500 border border-gray-900" : food.includes(i) ? "bg-red-500 border-gray-900" : ""} w-[10px] h-[10px]`}  />
                     // return <div key={idx} className={`${snake.includes(idx) ? "bg-green-500 border border-gray-900" : ""} w-[10px] h-[10px]`}  />
                 })}
             </div>
@@ -133,7 +169,7 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
                     <button 
                         className="block mx-auto hover:scale-110 text-4xl cursor-pointer" 
                         onClick={toggleShowGame}
-                        onMouseEnter={handlePlayBtnHoverSound}
+                        onMouseEnter={playButtonHover}
                     >
                         Play
                     </button>
@@ -149,13 +185,13 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
 
                 {/* DOLŮ */}
                 <div className="flex">
-                    <Link 
-                        href="/leaderboard" 
+                    <button 
                         className="block mx-auto hover:scale-110 text-4xl cursor-pointer"
-                        onMouseEnter={handlePlayBtnHoverSound}
+                        onMouseEnter={playButtonHover}
+                        onClick={() => setModals((prev => ({ ...prev, leaderboard: true })))}
                     >
                         Leaderboard
-                    </Link>
+                    </button>
                     <div className="flex-col">
                         {Array.from({ length: 5 }).map((_, i) => {
                             const idx = 131 + i;
@@ -167,9 +203,9 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
                 {/* DOLŮ */}
                 <div className="flex">
                     <button 
-                        onClick={() => setSettingsModal(true)} 
+                        onClick={() => setModals((prev => ({ ...prev, settings: true })))} 
                         className="block mx-auto hover:scale-110 text-4xl cursor-pointer"
-                        onMouseEnter={handlePlayBtnHoverSound}
+                        onMouseEnter={playButtonHover}
                     >
                         Settings
                     </button>
@@ -192,9 +228,9 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
 
                 {/* // TODO - Dokončit modální okno s návodem :) */}
                 <button 
-                        onClick={() => setSettingsModal(true)} 
+                        onClick={() => setModals((prev => ({ ...prev, howToPlay: true })))} 
                         className="block mx-auto hover:scale-110 text-4xl cursor-pointer"
-                        onMouseEnter={handlePlayBtnHoverSound}
+                        onMouseEnter={playButtonHover}
                     >
                         How to play
                 </button>

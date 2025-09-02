@@ -3,18 +3,19 @@
 import { useState } from "react"
 import { GameGrid } from "./GameGrid"
 import { Menu } from "./Menu"
-import { Sounds } from "./Sounds"
+import { BgMusic } from "./BgMusic"
+import { ModalUserName } from "./ModalUserName"
 
 export const HomePage = () => {
 
     const [showGame, setShowGame] = useState(false)
-    
     const toggleShowGame = () => setShowGame(prev => !prev)
 
   return (
     <>
 
-    <Sounds /> 
+    <BgMusic /> 
+    <ModalUserName />
     
     {showGame
         ? <GameGrid toggleShowGame={toggleShowGame} /> 
