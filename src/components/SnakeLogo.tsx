@@ -91,7 +91,7 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
                     }
 
                     if (snake[snake.length - 1] === idx) {
-                        return <SnakeHead direction={"down"} size="small" />;
+                        return <SnakeHead key={idx} direction={"down"} size="small" />;
                     }
 
                     return <div

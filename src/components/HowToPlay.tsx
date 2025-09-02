@@ -47,7 +47,7 @@ export const HowToPlay = ({ stage } : { stage: number }) => {
             {stage === 0 && (
                 <>
                     <p className="text-center mb-1">Control the snake, eat food, grow longer, and score points.</p>
-                    <p className="text-center">Don't crash into walls or yourself – that ends the game.</p>
+                    <p className="text-center">Do not crash into walls or yourself – that ends the game.</p>
                 </>
             )}
 
@@ -75,7 +75,6 @@ export const HowToPlay = ({ stage } : { stage: number }) => {
             {stage === 3 && (
                 <>
                     <p className="mb-1">At first only one food spawns.</p>
-                    {/* // TODO - nečitelná čisla fontem :/ */}
                     <p className="mb-1">From <span className="mx-1 font-numbers">5</span> points, multiple food can appear.</p>
                     <p className="mb-1">Each food increases score, length, and speed slightly.</p>
                 </>
