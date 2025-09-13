@@ -5,7 +5,6 @@ import { ModalSettings } from "./ModalSettings"
 import { ModalLeaderboard } from "./ModalLeaderboard"
 import { useSounds } from "@/hooks/useSounds"
 import { ModalHowToPlay } from "./ModalHowToPlay"
-import { SnakeHead } from "./SnakeHead"
 
 type Props = {
     toggleShowGame: () => void
@@ -16,7 +15,6 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
     const { playButtonHover, playButton } = useSounds()
 
     const [snake, setSnake] = useState<number[]>(Array.from({ length: 5 }, (_, i) => i))
-    const [food, setFood] = useState<number[]>([10,13,15])
 
     const [modals, setModals] = useState({
         settings: false,
@@ -30,10 +28,6 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
             const head = prevSnake[prevSnake.length - 1]
             let newHead = head
             let newSnake = [...prevSnake]
-
-            if(food.includes(newHead)) {
-                newSnake = [...prevSnake, newHead]
-            } 
 
             if(newHead > 210) {
                 newHead = 0
@@ -82,7 +76,7 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
 
             <div className="flex flex-col-reverse">
                 {Array.from({ length: 34 }).map((_, i) => {
-                    const idx = 178 + i; // otočení pořadí indexů
+                    const idx = 178 + i
                     
                     let bg = ""
 
@@ -90,32 +84,12 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
                         bg = "bg-green-500";
                     }
 
-                    if (snake[snake.length - 1] === idx) {
-                        return <SnakeHead key={idx} direction={"down"} size="small" />;
-                    }
-
-                    return <div
-                        key={idx}
-                        className={`${bg} border border-gray-900 w-[10px] h-[10px]`}
-                        style={{
-                            backgroundImage: food.includes(i)
-                            ? "url('/images/apple.png')"
-                            : "",
-                        backgroundSize: "cover",
-                        }}
-                    ></div>
-
-                    // if(food.includes(i)) {
-                    //     return (
-
-                    //     )
-                    // }
-
-                    // if(snake.includes(idx)) {
-                    //     return <div key={idx} className="w-[10px] h-[10px] bg-green-500 border border-gray-900"></div>
-                    // }
-                    // return <div key={idx} className={`${snake.includes(idx) ? "bg-green-500 border border-gray-900" : food.includes(i) ? "bg-red-500 border-gray-900" : ""} w-[10px] h-[10px]`}  />
-                    // return <div key={idx} className={`${snake.includes(idx) ? "bg-green-500 border border-gray-900" : ""} w-[10px] h-[10px]`}  />
+                    return (
+                        <div
+                            key={idx}
+                            className={`${bg} w-[10px] h-[10px]`}
+                        ></div>
+                )
                 })}
             </div>
 
@@ -126,8 +100,7 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
                 <div className="">
                     <div className="flex">
                         {Array.from({ length: 37 }).map((_, i) => (
-                            // <div key={i} className={`${snake.includes(i) ? "bg-green-500 border border-gray-900" : ""} w-[10px] h-[10px]`} />
-                            <div key={i} className={`${snake.includes(i) ? "bg-green-500 border border-gray-900" : food.includes(i) ? "bg-red-500 border-gray-900" : ""} w-[10px] h-[10px]`}  />
+                            <div key={i} className={`${snake.includes(i) ? "bg-green-500 border border-gray-900" : ""} w-[10px] h-[10px]`}  />
                         ))}
                     </div>
                 </div>   
@@ -165,7 +138,6 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
                             return <div key={idx} className={`${snake.includes(idx) ? "bg-green-500 border border-gray-900" : ""} w-[10px] h-[10px]`} />;
                         })}
                     </div>
-                    {/* <Link href="/game" className="block mx-auto hover:scale-110 text-4xl cursor-pointer">Play</Link> */}
                     <button 
                         className="block mx-auto hover:scale-110 text-4xl cursor-pointer" 
                         onClick={toggleShowGame}
@@ -226,7 +198,6 @@ export const SnakeLogo = ({ toggleShowGame } : Props) => {
                     })}
                 </div>
 
-                {/* // TODO - Dokončit modální okno s návodem :) */}
                 <button 
                         onClick={() => setModals((prev => ({ ...prev, howToPlay: true })))} 
                         className="block mx-auto hover:scale-110 text-4xl cursor-pointer"
